@@ -6,8 +6,8 @@ import PostList from "./PostList"
 import TagList from "./Tags/TagList"
 import UserPostList from "./UserPostList"
 import Hello from "./Hello"
-import { CategoryList } from "./CategoryList"
-import CategoryForm from "./CategoryForm"
+import { CategoryList } from "./Category/CategoryList"
+import CategoryForm from "./Category/CategoryForm"
 import PostDetails from "./PostDetail"
 
 export default function ApplicationViews({ isLoggedIn }) {

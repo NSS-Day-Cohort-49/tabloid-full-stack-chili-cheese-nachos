@@ -56,5 +56,27 @@ namespace Tabloid.Repositories
                 }
             }
         }
+
+        public void DeleteCategory(int id)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                            UPDATE Post
+                            SET CategoryId = null
+                            WHERE CategoryId = @id;
+                            DELETE FROM Category
+                            WHERE Id = @id
+                        ";
+                    cmd.Parameters.AddWithValue("@id", id);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
     }
 }
