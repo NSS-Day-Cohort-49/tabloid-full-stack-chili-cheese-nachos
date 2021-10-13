@@ -9,6 +9,7 @@ import Hello from "./Hello"
 import { CategoryList } from "./CategoryList"
 import CategoryForm from "./CategoryForm"
 import PostDetails from "./PostDetail"
+import TagForm from "./Tags/TagForm"
 
 export default function ApplicationViews({ isLoggedIn }) {
     return (
@@ -40,6 +41,9 @@ export default function ApplicationViews({ isLoggedIn }) {
 
                 <Route path="/tag" exact>
                     <TagList />
+                </Route>
+                <Route path="/tag/add" exact>
+                    <TagForm />
                 </Route>
 
                 <Route path="/login">
