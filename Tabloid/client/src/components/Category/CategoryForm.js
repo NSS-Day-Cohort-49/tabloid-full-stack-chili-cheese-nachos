@@ -1,7 +1,7 @@
 import React, { useState } from "react"
-import { useHistory } from "react-router"
+import { useHistory, useParams } from "react-router"
 import { Button, Form, FormGroup, Label, Input } from "reactstrap"
-import { addCategory } from "../modules/categoryManager"
+import { addCategory } from "../../modules/categoryManager"
 
 const CategoryForm = () => {
     const history = useHistory()
@@ -9,6 +9,8 @@ const CategoryForm = () => {
     const [category, setCategory] = useState({
         name: "",
     })
+
+    const { categoryId } = useParams()
 
     const handleInputChange = (evt) => {
         const value = evt.target.value
