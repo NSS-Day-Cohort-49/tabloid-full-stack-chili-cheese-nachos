@@ -113,7 +113,7 @@ namespace Tabloid.Repositories
             }
         }
 
-        public List<Post> GetByUserId(int id)
+        public Post GetByPostId(int id)
         {
             using (var conn = Connection)
             {
@@ -122,29 +122,29 @@ namespace Tabloid.Repositories
                 {
                     cmd.CommandText = @"SELECT p.Id, p.Title, p.Content,
 		                                p.CreateDateTime, p.PublishDateTime, p.IsApproved,
-		                                p.CategoryId, p.UserProfileId, 
+		                                p.CategoryId, p.UserProfileId, p.ImageLocation,
 		                                c.[Name] AS CategoryName,
 		                                u.FirstName, u.LastName, u.DisplayName
                                 FROM Post p
                                         LEFT JOIN Category c ON p.CategoryId = c.id
                                         LEFT JOIN UserProfile u ON p.UserProfileId = u.id
-                                WHERE IsApproved = 1 AND PublishDateTime < SYSDATETIME() AND p.UserProfileId = @id
-                                ORDER BY p.PublishDateTime DESC";
+                                WHERE p.Id = @id";
 
                     DbUtils.AddParameter(cmd, "@Id", id);
 
                     var reader = cmd.ExecuteReader();
 
-                    var post = new List<Post>();
+                    Post post = null;
 
-                    while (reader.Read())
+                    if (reader.Read())
                     {
-                        post.Add(new Post()
+                        post = new Post()
                         {
                             Id = id,
                             Title = DbUtils.GetString(reader, "Title"),
                             Content = DbUtils.GetString(reader, "Content"),
                             PublishDateTime = DbUtils.GetDateTime(reader, "PublishDateTime"),
+                            ImageLocation = DbUtils.GetString(reader, "ImageLocation"),
                             UserProfileId = DbUtils.GetInt(reader, "UserProfileId"),
                             CategoryId = DbUtils.GetInt(reader, "CategoryId"),
                             UserProfile = new UserProfile()
@@ -157,7 +157,7 @@ namespace Tabloid.Repositories
                                 Id = DbUtils.GetInt(reader, "CategoryId"),
                                 Name = DbUtils.GetString(reader, "CategoryName")
                             },
-                        });
+                        };
                     }
 
                     reader.Close();

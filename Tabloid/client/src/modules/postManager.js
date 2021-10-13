@@ -9,7 +9,7 @@ export const getAllPosts = () => {
             headers: {
                 Authorization: `Bearer ${token}`
             }
-        }).then (res => {
+        }).then(res => {
             if (res.ok) {
                 return res.json();
             } else {
@@ -19,6 +19,24 @@ export const getAllPosts = () => {
     });
 };
 
+export const getPostById = (id) => {
+    return getToken().then((token) => {
+        return fetch(`${apiUrl}/${id}`, {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }).then(res => {
+            if (res.ok) {
+                return res.json()
+            } else {
+                throw new Error("ERROR GETTING POST BY ID")
+            }
+        })
+    })
+}
+
+
 export const getPostsByUserId = () => {
     return getToken().then((token) => {
         return fetch(`${apiUrl}/myPosts`, {
@@ -27,6 +45,6 @@ export const getPostsByUserId = () => {
                 Authorization: `Bearer ${token}`
             }
         })
-        .then(res => res.json())
+            .then(res => res.json())
     })
 }

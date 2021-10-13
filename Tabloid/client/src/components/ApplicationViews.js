@@ -7,6 +7,7 @@ import TagList from "./Tags/TagList"
 import UserPostList from "./UserPostList"
 import Hello from "./Hello"
 import { CategoryList } from "./CategoryList"
+import PostDetails from "./PostDetail"
 
 export default function ApplicationViews({ isLoggedIn }) {
     return (
@@ -16,12 +17,16 @@ export default function ApplicationViews({ isLoggedIn }) {
                     {isLoggedIn ? <Hello /> : <Redirect to="/login" />}
                 </Route>
 
-                <Route path="/post">
+                <Route path="/post" exact>
                     <PostList />
                 </Route>
 
                 <Route path="/myPosts" exact>
                     <UserPostList />
+                </Route>
+
+                <Route path="/post/:id">
+                    <PostDetails />
                 </Route>
 
                 <Route path="/category" exact>
