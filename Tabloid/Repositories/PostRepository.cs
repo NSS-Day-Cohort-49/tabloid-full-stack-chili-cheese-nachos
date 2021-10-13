@@ -61,5 +61,111 @@ namespace Tabloid.Repositories
                 }
             }
         }
+
+        public List<Post> GetUserPosts(string firebaseUserId)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"SELECT p.Id, p.Title, p.Content,
+		                                p.CreateDateTime, p.PublishDateTime, p.IsApproved,
+		                                p.CategoryId, p.UserProfileId, 
+		                                c.[Name] AS CategoryName,
+		                                u.FirstName, u.LastName, u.DisplayName, u.FirebaseUserId
+                                FROM Post p
+                                        LEFT JOIN Category c ON p.CategoryId = c.id
+                                        LEFT JOIN UserProfile u ON p.UserProfileId = u.id
+                                WHERE u.FirebaseUserId = @FirebaseUserId
+                                ORDER BY p.PublishDateTime DESC";
+
+                    DbUtils.AddParameter(cmd, "@FirebaseUserId", firebaseUserId);
+
+                    var reader = cmd.ExecuteReader();
+                    var posts = new List<Post>();
+                    while (reader.Read())
+                    {
+                        posts.Add(new Post()
+                        {
+                            Id = DbUtils.GetInt(reader, "Id"),
+                            Title = DbUtils.GetString(reader, "Title"),
+                            Content = DbUtils.GetString(reader, "Content"),
+                            PublishDateTime = DbUtils.GetDateTime(reader, "PublishDateTime"),
+                            UserProfileId = DbUtils.GetInt(reader, "UserProfileId"),
+                            CategoryId = DbUtils.GetInt(reader, "CategoryId"),
+                            UserProfile = new UserProfile()
+                            {
+                                Id = DbUtils.GetInt(reader, "UserProfileId"),
+                                DisplayName = DbUtils.GetString(reader, "DisplayName")
+                            },
+                            Category = new Category()
+                            {
+                                Id = DbUtils.GetInt(reader, "CategoryId"),
+                                Name = DbUtils.GetString(reader, "CategoryName")
+                            },
+                        });
+                    }
+                    reader.Close();
+
+                    return posts;
+                }
+            }
+        }
+
+        public List<Post> GetByUserId(int id)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"SELECT p.Id, p.Title, p.Content,
+		                                p.CreateDateTime, p.PublishDateTime, p.IsApproved,
+		                                p.CategoryId, p.UserProfileId, 
+		                                c.[Name] AS CategoryName,
+		                                u.FirstName, u.LastName, u.DisplayName
+                                FROM Post p
+                                        LEFT JOIN Category c ON p.CategoryId = c.id
+                                        LEFT JOIN UserProfile u ON p.UserProfileId = u.id
+                                WHERE IsApproved = 1 AND PublishDateTime < SYSDATETIME() AND p.UserProfileId = @id
+                                ORDER BY p.PublishDateTime DESC";
+
+                    DbUtils.AddParameter(cmd, "@Id", id);
+
+                    var reader = cmd.ExecuteReader();
+
+                    var post = new List<Post>();
+
+                    while (reader.Read())
+                    {
+                        post.Add(new Post()
+                        {
+                            Id = id,
+                            Title = DbUtils.GetString(reader, "Title"),
+                            Content = DbUtils.GetString(reader, "Content"),
+                            PublishDateTime = DbUtils.GetDateTime(reader, "PublishDateTime"),
+                            UserProfileId = DbUtils.GetInt(reader, "UserProfileId"),
+                            CategoryId = DbUtils.GetInt(reader, "CategoryId"),
+                            UserProfile = new UserProfile()
+                            {
+                                Id = DbUtils.GetInt(reader, "UserProfileId"),
+                                DisplayName = DbUtils.GetString(reader, "DisplayName")
+                            },
+                            Category = new Category()
+                            {
+                                Id = DbUtils.GetInt(reader, "CategoryId"),
+                                Name = DbUtils.GetString(reader, "CategoryName")
+                            },
+                        });
+                    }
+
+                    reader.Close();
+
+                    return post;
+
+                }
+            }
+        }
     }
 }
