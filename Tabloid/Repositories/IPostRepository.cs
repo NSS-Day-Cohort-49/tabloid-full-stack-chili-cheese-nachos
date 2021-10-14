@@ -9,5 +9,6 @@ namespace Tabloid.Repositories
         Post GetByPostId(int id);
         List<Post> GetUserPosts(string firebaseUserId);
         void Add(Post post);
+        void Delete(int id);
     }
 }

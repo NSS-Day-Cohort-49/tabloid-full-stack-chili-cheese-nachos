@@ -63,6 +63,13 @@ namespace Tabloid.Controllers
             return CreatedAtAction("Get", new { id = post.Id }, post);
         }
 
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            _postRepository.Delete(id);
+            return NoContent();
+        }
+
         private UserProfile GetCurrentUserProfileId()
         {
             var firebaseUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);

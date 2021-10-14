@@ -61,3 +61,15 @@ export const addPost = (post) => {
         })
     })
 }
+
+export const deletePost = (id) => {
+    return getToken().then((token) => {
+        return fetch(`${apiUrl}/${id}`, {
+            method: "DELETE",
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+        })
+    })
+}
