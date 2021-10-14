@@ -49,5 +49,24 @@ namespace Tabloid.Controllers
             }
             
         }
+
+        [HttpGet("{id}")]
+        public IActionResult Get(int id)
+        {
+            return Ok(_categoryRepository.GetCategoryById(id));
+        }
+
+        [HttpPut("{id}")]
+        public IActionResult Put(int id, Category category)
+        {
+
+            if (id != category.Id)
+            {
+                return BadRequest();
+            }
+
+            _categoryRepository.UpdateCategory(category);
+            return Ok();
+        }
     }
 }
