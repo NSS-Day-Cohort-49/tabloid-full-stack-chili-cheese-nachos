@@ -47,7 +47,7 @@ namespace Tabloid.Controllers
             {
                 return NotFound();
             }
-            
+
         }
 
         [HttpGet("{id}")]
