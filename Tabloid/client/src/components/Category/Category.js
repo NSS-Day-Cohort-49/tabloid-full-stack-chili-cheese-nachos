@@ -19,7 +19,14 @@ const Category = ({ category }) => {
                 <button className="deleteCat" onClick={handleDelete}>
                     Delete
                 </button>
-                <button className="updateCat">Edit</button>
+                <button
+                    className="updateCat"
+                    onClick={() => {
+                        history.push(`/category/edit/${category.id}`)
+                    }}
+                >
+                    Edit
+                </button>
             </CardFooter>
         </Card>
     )

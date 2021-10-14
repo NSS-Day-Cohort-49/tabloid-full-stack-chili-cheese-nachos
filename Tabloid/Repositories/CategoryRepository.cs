@@ -39,6 +39,40 @@ namespace Tabloid.Repositories
                 }
             }
         }
+
+        public Category GetCategoryById(int id)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                        SELECT Name, Id
+                         FROM Category
+                        WHERE id = @id ";
+
+                    cmd.Parameters.AddWithValue("@id", id);
+                    var reader = cmd.ExecuteReader();
+
+                    Category category = null;
+
+                    if (reader.Read())
+                    {
+                        category = new Category()
+                        {
+                            Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                            Name = reader.GetString(reader.GetOrdinal("Name"))
+                        };
+                    }
+
+                    reader.Close();
+
+                    return category;
+                }
+            }
+        }
+
         public void AddCategory(Category category)
         {
             using (var conn = Connection)
@@ -73,6 +107,25 @@ namespace Tabloid.Repositories
                             WHERE Id = @id
                         ";
                     cmd.Parameters.AddWithValue("@id", id);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public void UpdateCategory(Category category)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"Update Category 
+                        SET Name = @name
+                        WHERE Id = @id";
+
+                    DbUtils.AddParameter(cmd, "@name", category.Name);
+                    DbUtils.AddParameter(cmd, "@id", category.Id);
 
                     cmd.ExecuteNonQuery();
                 }

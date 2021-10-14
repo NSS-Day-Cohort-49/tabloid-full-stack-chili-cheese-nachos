@@ -39,9 +39,14 @@ export default function ApplicationViews({ isLoggedIn }) {
                     <CategoryForm />
                 </Route>
 
+                <Route path="/category/edit/:id" exact>
+                    <CategoryForm />
+                </Route>
+
                 <Route path="/tag" exact>
                     <TagList />
                 </Route>
+
                 <Route path="/tag/add" exact>
                     <TagForm />
                 </Route>
