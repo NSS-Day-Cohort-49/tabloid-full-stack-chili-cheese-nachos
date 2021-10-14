@@ -48,3 +48,16 @@ export const getPostsByUserId = () => {
             .then(res => res.json())
     })
 }
+
+export const addPost = (post) => {
+    return getToken().then((token) => {
+        return fetch(apiUrl, {
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(post),
+        })
+    })
+}

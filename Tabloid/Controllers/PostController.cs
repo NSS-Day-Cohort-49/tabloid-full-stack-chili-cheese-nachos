@@ -34,7 +34,7 @@ namespace Tabloid.Controllers
         public IActionResult GetById(int id)
         {
             var post = _postRepository.GetByPostId(id);
-            if(post == null)
+            if (post == null)
             {
                 return NotFound();
             }
@@ -45,12 +45,22 @@ namespace Tabloid.Controllers
         public IActionResult UserPosts()
         {
             var UserProfileId = GetCurrentUserProfileId();
-            if(UserProfileId == null)
+            if (UserProfileId == null)
             {
                 return NotFound();
             }
             var posts = _postRepository.GetUserPosts(UserProfileId.FirebaseUserId);
             return Ok(posts);
+        }
+
+        [HttpPost]
+        public IActionResult Add(Post post)
+        {
+            var currentUser = GetCurrentUserProfileId();
+
+            post.UserProfileId = currentUser.Id;
+            _postRepository.Add(post);
+            return CreatedAtAction("Get", new { id = post.Id }, post);
         }
 
         private UserProfile GetCurrentUserProfileId()
