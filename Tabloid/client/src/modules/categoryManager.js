@@ -20,6 +20,23 @@ export const getAllCategories = () => {
     })
 }
 
+export const getCategoryById = (id) => {
+    return getToken().then((token) => {
+        return fetch(`${apiUrl}/${id}`, {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        }).then((res) => {
+            if (res.ok) {
+                return res.json()
+            } else {
+                throw new Error("ERROR GETTING CATEGORY BY ID")
+            }
+        })
+    })
+}
+
 export const addCategory = (category) => {
     return getToken().then((token) => {
         return fetch(apiUrl, {
@@ -65,5 +82,18 @@ export const deleteCategory = (id) => {
         //             )
         //         }
         //     })
+    })
+}
+
+export const updateCategory = (category) => {
+    return getToken().then((token) => {
+        return fetch(`${apiUrl}/${category.id}`, {
+            method: "PUT",
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(category),
+        })
     })
 }
