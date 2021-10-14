@@ -5,7 +5,9 @@ export default function User({ user }) {
   return (
     <Card className="m-4">
       <CardBody>
-          <strong>{user?.displayName}</strong>
+          <strong>{user?.fullName}</strong>
+          <div>{user?.displayName}</div>
+          <div>{user?.userType.name}</div>
       </CardBody>
     </Card>
   );
