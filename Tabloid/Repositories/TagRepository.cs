@@ -20,7 +20,8 @@ namespace Tabloid.Repositories
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = "SELECT * FROM Tag";
+                    cmd.CommandText = @"SELECT * FROM Tag
+                            ORDER BY Name";
 
                     SqlDataReader reader = cmd.ExecuteReader();
 
