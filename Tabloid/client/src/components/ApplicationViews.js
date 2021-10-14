@@ -9,6 +9,7 @@ import Hello from "./Hello"
 import { CategoryList } from "./CategoryList"
 import CategoryForm from "./CategoryForm"
 import PostDetails from "./PostDetail"
+import PostForm from "./PostForm"
 
 export default function ApplicationViews({ isLoggedIn }) {
     return (
@@ -26,8 +27,12 @@ export default function ApplicationViews({ isLoggedIn }) {
                     <UserPostList />
                 </Route>
 
-                <Route path="/post/:id">
+                <Route path="/post/:id" exact>
                     <PostDetails />
+                </Route>
+
+                <Route path="/addPost" exact>
+                    <PostForm />
                 </Route>
 
                 <Route path="/category" exact>

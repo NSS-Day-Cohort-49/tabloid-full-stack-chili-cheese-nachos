@@ -5,8 +5,9 @@ using System.Threading.Tasks;
 using Tabloid.Models;
 using Tabloid.Utils;
 using Microsoft.Data.SqlClient;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-
+using System.Security.Claims;
 
 namespace Tabloid.Repositories
 {
@@ -164,6 +165,28 @@ namespace Tabloid.Repositories
 
                     return post;
 
+                }
+            }
+        }
+
+        public void Add(Post post)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"INSERT INTO Post (Title, Content, PublishDateTime, ImageLocation, IsApproved, CreateDateTime, UserProfileId, CategoryId)
+                                        OUTPUT INSERTED.ID
+                                        VALUES (@Title, @Content, @PublishDateTime, @ImageLocation, 'true', SYSDATETIME(), @UserProfileId, @CategoryId)";
+                    DbUtils.AddParameter(cmd, "@Title", post.Title);
+                    DbUtils.AddParameter(cmd, "@Content", post.Content);
+                    DbUtils.AddParameter(cmd, "@PublishDateTime", post.PublishDateTime);
+                    DbUtils.AddParameter(cmd, "@ImageLocation", post.ImageLocation);
+                    DbUtils.AddParameter(cmd, "@UserProfileId", post.UserProfileId);
+                    DbUtils.AddParameter(cmd, "@CategoryId", post.CategoryId);
+
+                    post.Id = (int)cmd.ExecuteScalar();
                 }
             }
         }
