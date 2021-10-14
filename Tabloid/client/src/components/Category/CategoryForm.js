@@ -1,16 +1,35 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { useHistory, useParams } from "react-router"
 import { Button, Form, FormGroup, Label, Input } from "reactstrap"
-import { addCategory } from "../../modules/categoryManager"
+import {
+    addCategory,
+    updateCategory,
+    getCategoryById,
+} from "../../modules/categoryManager"
 
 const CategoryForm = () => {
     const history = useHistory()
 
     const [category, setCategory] = useState({
-        name: "",
+        // name: "",
     })
 
-    const { categoryId } = useParams()
+    const params = useParams()
+
+    const categoryId = params.id
+
+    const [isLoading, setIsLoading] = useState(true)
+
+    useEffect(() => {
+        if (categoryId) {
+            getCategoryById(categoryId).then((event) => {
+                setCategory(event)
+                setIsLoading(false)
+            })
+        } else {
+            setIsLoading(false)
+        }
+    }, [])
 
     const handleInputChange = (evt) => {
         const value = evt.target.value
@@ -25,9 +44,23 @@ const CategoryForm = () => {
     const handleSave = (evt) => {
         evt.preventDefault()
 
-        addCategory(category).then(() => {
-            history.push("/category")
-        })
+        if (categoryId) {
+            setIsLoading(true)
+            updateCategory({
+                id: parseInt(categoryId),
+                name: category.name,
+            }).then(() => history.push("/category"))
+        } else {
+            addCategory({
+                name: category.name,
+            }).then(() => {
+                history.push("/category")
+            })
+        }
+
+        // addCategory(category).then(() => {
+        //     history.push("/category")
+        // })
     }
 
     return (
@@ -43,8 +76,12 @@ const CategoryForm = () => {
                     onChange={handleInputChange}
                 />
             </FormGroup>
-            <Button className="btn btn-primary" onClick={handleSave}>
-                Submit
+            <Button
+                className="btn btn-primary"
+                disabled={isLoading}
+                onClick={handleSave}
+            >
+                {categoryId ? "Save Category" : "Add Category"}
             </Button>
         </Form>
     )
