@@ -59,6 +59,24 @@ namespace Tabloid.Controllers
                 return NotFound();
             }
         }
+
+        [HttpGet("{id}")]
+        public IActionResult Get(int id)
+        {
+            return Ok(_tagRepo.GetTagById(id));
+        }
+
+        [HttpPut("{id}")]
+        public IActionResult Put(int id, Tag tag)
+        {
+            if (id != tag.Id)
+            {
+                return BadRequest();
+            }
+
+            _tagRepo.UpdateTag(tag);
+            return Ok();
+        }
         
     }
 }

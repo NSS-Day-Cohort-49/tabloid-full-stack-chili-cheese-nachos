@@ -55,17 +55,19 @@ namespace Tabloid.Repositories
 
                     SqlDataReader reader = cmd.ExecuteReader();
 
+                    Tag tag = null; 
+
                     if (reader.Read())
                     {
-                        Tag tag = new Tag
+                        tag = new Tag()
                         {
                             Id = DbUtils.GetInt(reader, "Id"),
                             Name = DbUtils.GetString(reader, "Name")
                         };
-                        reader.Close();
-                        return tag;
                     }
-                    return null;
+                        reader.Close();
+
+                        return tag;
                 }
             }
         }
@@ -99,9 +101,8 @@ namespace Tabloid.Repositories
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"UPDATE Tag
-                                        SET
-                                            Name = @name
-                                        WHERE Id = @id";
+                        SET Name = @name
+                        WHERE Id = @id";
 
                     cmd.Parameters.AddWithValue("@name", tag.Name);
                     cmd.Parameters.AddWithValue("@id", tag.Id);
@@ -127,11 +128,6 @@ namespace Tabloid.Repositories
                 }
             }
         }
-
-
-
-
-
     }
 }
 
