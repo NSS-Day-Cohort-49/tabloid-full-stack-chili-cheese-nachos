@@ -11,7 +11,7 @@ using System.Security.Claims;
 
 namespace Tabloid.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class PostController : ControllerBase
@@ -73,10 +73,13 @@ namespace Tabloid.Controllers
         [HttpPut("{id}")]
         public IActionResult Put(int id, Post post)
         {
-            if( id != post.Id)
+            var currentUser = GetCurrentUserProfileId();
+            if (id != post.Id)
             {
                 return BadRequest();
             }
+            post.UserProfileId = currentUser.Id;
+            post.CreateDateTime = DateTime.Now;
             _postRepository.Update(post);
             return NoContent();
         }

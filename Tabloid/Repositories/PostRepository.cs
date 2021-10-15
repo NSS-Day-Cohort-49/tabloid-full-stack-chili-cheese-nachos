@@ -125,7 +125,7 @@ namespace Tabloid.Repositories
 		                                p.CreateDateTime, p.PublishDateTime, p.IsApproved,
 		                                p.CategoryId, p.UserProfileId, p.ImageLocation,
 		                                c.[Name] AS CategoryName,
-		                                u.FirstName, u.LastName, u.DisplayName
+		                                u.FirstName, u.LastName, u.DisplayName, u.Email
                                 FROM Post p
                                         LEFT JOIN Category c ON p.CategoryId = c.id
                                         LEFT JOIN UserProfile u ON p.UserProfileId = u.id
@@ -146,12 +146,16 @@ namespace Tabloid.Repositories
                             Content = DbUtils.GetString(reader, "Content"),
                             PublishDateTime = DbUtils.GetDateTime(reader, "PublishDateTime"),
                             ImageLocation = DbUtils.GetString(reader, "ImageLocation"),
+                            CreateDateTime = DbUtils.GetDateTime(reader, "CreateDateTime"),
                             UserProfileId = DbUtils.GetInt(reader, "UserProfileId"),
                             CategoryId = DbUtils.GetInt(reader, "CategoryId"),
                             UserProfile = new UserProfile()
                             {
                                 Id = DbUtils.GetInt(reader, "UserProfileId"),
-                                DisplayName = DbUtils.GetString(reader, "DisplayName")
+                                DisplayName = DbUtils.GetString(reader, "DisplayName"),
+                                FirstName = DbUtils.GetString(reader, "FirstName"),
+                                LastName = DbUtils.GetString(reader, "LastName"),
+                                Email = DbUtils.GetString(reader, "Email"),
                             },
                             Category = new Category()
                             {

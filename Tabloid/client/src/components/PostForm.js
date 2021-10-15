@@ -8,21 +8,25 @@ export default function PostForm() {
     const history = useHistory();
     const [post, setPost] = useState({})
     const [categories, setCategories] = useState([])
+    const [isLoading, setIsLoading] = useState(true)
     const params = useParams()
 
-    useEffect(() => {
-        getAllCategories()
-            .then(res => {
-                setCategories(res)
-            })
-    }, [])
+    // useEffect(() => {
+    //     getAllCategories()
+    //         .then(res => {
+    //             setCategories(res)
+    //             setIsLoading(false)
+    //         })
+    // }, [])
 
     useEffect(() => {
         if (params.id) {
-            getPostById(params.id).then(e => {
-                setPost(e)
+            getPostById(params.id).then(p => {
+                setPost(p)
+                setIsLoading(false)
             })
-        }
+        } 
+        getAllCategories().then(setCategories)
     }, [])
 
     const handleInputChange = e => {
@@ -34,10 +38,8 @@ export default function PostForm() {
     const handleSave = e => {
         e.preventDefault()
         if (params.id) {
-            updatePost({
-                id: params.id,
-                title: post.title,
-            })
+            setIsLoading(true)
+            updatePost(post)
             .then(()=>{
                 history.push("/post")
             })

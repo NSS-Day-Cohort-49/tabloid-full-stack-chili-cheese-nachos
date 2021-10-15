@@ -60,11 +60,11 @@ export default function ApplicationViews({ isLoggedIn }) {
                 <Route path="/tag/add" exact>
                     <TagForm />
                 </Route>
-                
+
                 <Route path="/tag/edit/:id" exact>
                     <TagForm />
                 </Route>
-                
+
                 <Route path="/user" exact>
                     <UserList />
                 </Route>
