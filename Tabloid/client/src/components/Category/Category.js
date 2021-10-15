@@ -21,20 +21,23 @@ const Category = ({ category }) => {
 
     return (
         <Card className="m-4">
-            <CardBody>{category.name}</CardBody>
-            <CardFooter>
-                <button className="deleteCat" onClick={handleDelete}>
+            <CardBody>
+                {category.name}
+                <button
+                    className="btn btn-danger float-right"
+                    onClick={handleDelete}
+                >
                     Delete
                 </button>
                 <button
-                    className="updateCat"
+                    className="btn btn-dark float-right"
                     onClick={() => {
                         history.push(`/category/edit/${category.id}`)
                     }}
                 >
                     Edit
                 </button>
-            </CardFooter>
+            </CardBody>
         </Card>
     )
 }
