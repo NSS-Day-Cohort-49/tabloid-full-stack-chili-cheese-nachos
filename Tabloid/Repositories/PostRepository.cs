@@ -125,7 +125,7 @@ namespace Tabloid.Repositories
 		                                p.CreateDateTime, p.PublishDateTime, p.IsApproved,
 		                                p.CategoryId, p.UserProfileId, p.ImageLocation,
 		                                c.[Name] AS CategoryName,
-		                                u.FirstName, u.LastName, u.DisplayName
+		                                u.FirstName, u.LastName, u.DisplayName, u.Email
                                 FROM Post p
                                         LEFT JOIN Category c ON p.CategoryId = c.id
                                         LEFT JOIN UserProfile u ON p.UserProfileId = u.id
@@ -146,12 +146,16 @@ namespace Tabloid.Repositories
                             Content = DbUtils.GetString(reader, "Content"),
                             PublishDateTime = DbUtils.GetDateTime(reader, "PublishDateTime"),
                             ImageLocation = DbUtils.GetString(reader, "ImageLocation"),
+                            CreateDateTime = DbUtils.GetDateTime(reader, "CreateDateTime"),
                             UserProfileId = DbUtils.GetInt(reader, "UserProfileId"),
                             CategoryId = DbUtils.GetInt(reader, "CategoryId"),
                             UserProfile = new UserProfile()
                             {
                                 Id = DbUtils.GetInt(reader, "UserProfileId"),
-                                DisplayName = DbUtils.GetString(reader, "DisplayName")
+                                DisplayName = DbUtils.GetString(reader, "DisplayName"),
+                                FirstName = DbUtils.GetString(reader, "FirstName"),
+                                LastName = DbUtils.GetString(reader, "LastName"),
+                                Email = DbUtils.GetString(reader, "Email"),
                             },
                             Category = new Category()
                             {
@@ -187,6 +191,49 @@ namespace Tabloid.Repositories
                     DbUtils.AddParameter(cmd, "@CategoryId", post.CategoryId);
 
                     post.Id = (int)cmd.ExecuteScalar();
+                }
+            }
+        }
+
+        public void Delete(int id)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "DELETE FROM Post WHERE @Id = Id";
+                    DbUtils.AddParameter(cmd, "@Id", id);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public void Update(Post post)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                                        UPDATE Post 
+                                        SET 
+                                            Title = @Title, 
+                                            Content = @Content, 
+                                            PublishDateTime = @PublishDateTime, 
+                                            ImageLocation = @ImageLocation,
+                                            CategoryId = @CategoryId
+                                        WHERE
+                                            Id = @Id";
+                    DbUtils.AddParameter(cmd, "@Title", post.Title);
+                    DbUtils.AddParameter(cmd, "@Content", post.Content);
+                    DbUtils.AddParameter(cmd, "@PublishDateTime", post.PublishDateTime);
+                    DbUtils.AddParameter(cmd, "@ImageLocation", post.ImageLocation);
+                    DbUtils.AddParameter(cmd, "@CategoryId", post.CategoryId);
+                    DbUtils.AddParameter(cmd, "@Id", post.Id);
+
+                    cmd.ExecuteNonQuery();
                 }
             }
         }

@@ -1,39 +1,54 @@
 import React, { useEffect, useState } from "react";
-import { useHistory } from "react-router";
+import { useHistory, useParams } from "react-router";
 import { Button, Form, FormGroup, Label, Input } from "reactstrap";
 import { getAllCategories } from "../modules/categoryManager";
-import { addPost } from "../modules/postManager";
+import { addPost, getPostById, updatePost } from "../modules/postManager";
 
 export default function PostForm() {
     const history = useHistory();
     const [post, setPost] = useState({})
     const [categories, setCategories] = useState([])
-    // const [selectedCategory, setSelectedCategory] = useState({})
-    // const [isLoading, setIsLoading] = useState(false)
+    const [isLoading, setIsLoading] = useState(true)
+    const params = useParams()
+
+    // useEffect(() => {
+    //     getAllCategories()
+    //         .then(res => {
+    //             setCategories(res)
+    //             setIsLoading(false)
+    //         })
+    // }, [])
 
     useEffect(() => {
-        getAllCategories()
-            .then(res => {
-                setCategories(res)
+        if (params.id) {
+            getPostById(params.id).then(p => {
+                setPost(p)
+                setIsLoading(false)
             })
+        } 
+        getAllCategories().then(setCategories)
     }, [])
 
     const handleInputChange = e => {
-        const value = e.target.value;
-        const key = e.target.id;
-
         const postCopy = { ...post }
-        postCopy[key] = value
+        postCopy[e.target.id] = e.target.value
         setPost(postCopy)
     }
 
     const handleSave = e => {
         e.preventDefault()
-        // setIsLoading(true);
-        addPost(post)
-        .then(() => {
-            history.push("/post")
-        })
+        if (params.id) {
+            setIsLoading(true)
+            updatePost(post)
+            .then(()=>{
+                history.push("/post")
+            })
+        } else {
+            addPost(post)
+                .then(() => {
+                    history.push("/post")
+                })
+        }
     }
 
     return (

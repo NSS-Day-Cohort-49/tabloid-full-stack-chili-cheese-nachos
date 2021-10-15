@@ -1,22 +1,32 @@
 import React, { useEffect, useState } from "react";
 import Post from "./Post";
-import { getPostsByUserId } from "../modules/postManager";
-import { useParams } from "react-router-dom";
+import { deletePost, getPostsByUserId } from "../modules/postManager";
 
-export default function UserPostList() {
+const UserPostList = () => {
     const [posts, setPosts] = useState([]);
 
-    // const { id } = useParams()
+    const getPostsFromState = () => {
+        return getPostsByUserId().then(posts => setPosts(posts))
+    }
+
+    const handleDelete = postId => {
+        deletePost(postId)
+            .then(getPostsFromState())
+    }
 
     useEffect(() => {
-        getPostsByUserId().then(setPosts);
+        getPostsFromState()
     }, [])
 
     return (
-        <section>
-            {posts.map(
-                p => <Post key={p.id} post={p} />
-            )}
-        </section>
+        <>
+            <section>
+                {posts.map(
+                    post => <Post key={post.id} post={post} handleDelete={handleDelete}/>
+                )}
+            </section>
+        </>
     );
 }
+
+export default UserPostList

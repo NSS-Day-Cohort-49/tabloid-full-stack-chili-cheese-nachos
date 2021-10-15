@@ -11,7 +11,7 @@ using System.Security.Claims;
 
 namespace Tabloid.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class PostController : ControllerBase
@@ -61,6 +61,27 @@ namespace Tabloid.Controllers
             post.UserProfileId = currentUser.Id;
             _postRepository.Add(post);
             return CreatedAtAction("Get", new { id = post.Id }, post);
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            _postRepository.Delete(id);
+            return NoContent();
+        }
+
+        [HttpPut("{id}")]
+        public IActionResult Put(int id, Post post)
+        {
+            var currentUser = GetCurrentUserProfileId();
+            if (id != post.Id)
+            {
+                return BadRequest();
+            }
+            post.UserProfileId = currentUser.Id;
+            post.CreateDateTime = DateTime.Now;
+            _postRepository.Update(post);
+            return NoContent();
         }
 
         private UserProfile GetCurrentUserProfileId()

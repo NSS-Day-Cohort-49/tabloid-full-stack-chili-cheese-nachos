@@ -11,10 +11,6 @@ export default function PostDetails () {
         getPostById(id).then(setPost);
     }, []);
 
-    // if (!post) {
-    //     return null;
-    // }
-
     return (
         <div className='container'>
             <div className='row justify-content-center'>
