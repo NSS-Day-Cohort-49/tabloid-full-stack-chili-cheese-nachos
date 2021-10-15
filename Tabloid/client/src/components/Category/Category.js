@@ -8,8 +8,15 @@ const Category = ({ category }) => {
 
     const handleDelete = (evt) => {
         evt.preventDefault()
-
-        deleteCategory(category.id).then(window.location.reload())
+        if (
+            window.confirm(
+                `Are you sure you want to delete "${category.name}"? Press OK to confirm.`
+            )
+        ) {
+            deleteCategory(category.id).then(window.location.reload())
+        } else {
+            history.push("/category")
+        }
     }
 
     return (
