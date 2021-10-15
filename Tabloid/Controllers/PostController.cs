@@ -70,6 +70,17 @@ namespace Tabloid.Controllers
             return NoContent();
         }
 
+        [HttpPut("{id}")]
+        public IActionResult Put(int id, Post post)
+        {
+            if( id != post.Id)
+            {
+                return BadRequest();
+            }
+            _postRepository.Update(post);
+            return NoContent();
+        }
+
         private UserProfile GetCurrentUserProfileId()
         {
             var firebaseUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);

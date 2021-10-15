@@ -37,6 +37,10 @@ export default function ApplicationViews({ isLoggedIn }) {
                     <PostForm />
                 </Route>
 
+                <Route path="/post/edit/:id" exact>
+                    <PostForm />
+                </Route>
+
                 <Route path="/category" exact>
                     <CategoryList />
                 </Route>

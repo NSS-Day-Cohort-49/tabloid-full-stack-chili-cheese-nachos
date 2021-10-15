@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { useHistory } from "react-router";
+import { useHistory, useParams } from "react-router";
 import { Button, Form, FormGroup, Label, Input } from "reactstrap";
 import { getAllCategories } from "../modules/categoryManager";
-import { addPost } from "../modules/postManager";
+import { addPost, getPostById, updatePost } from "../modules/postManager";
 
 export default function PostForm() {
     const history = useHistory();
     const [post, setPost] = useState({})
     const [categories, setCategories] = useState([])
-    // const [selectedCategory, setSelectedCategory] = useState({})
-    // const [isLoading, setIsLoading] = useState(false)
+    const params = useParams()
 
     useEffect(() => {
         getAllCategories()
@@ -18,22 +17,36 @@ export default function PostForm() {
             })
     }, [])
 
-    const handleInputChange = e => {
-        const value = e.target.value;
-        const key = e.target.id;
+    useEffect(() => {
+        if (params.id) {
+            getPostById(params.id).then(e => {
+                setPost(e)
+            })
+        }
+    }, [])
 
+    const handleInputChange = e => {
         const postCopy = { ...post }
-        postCopy[key] = value
+        postCopy[e.target.id] = e.target.value
         setPost(postCopy)
     }
 
     const handleSave = e => {
         e.preventDefault()
-        // setIsLoading(true);
-        addPost(post)
-        .then(() => {
-            history.push("/post")
-        })
+        if (params.id) {
+            updatePost({
+                id: params.id,
+                title: post.title,
+            })
+            .then(()=>{
+                history.push("/post")
+            })
+        } else {
+            addPost(post)
+                .then(() => {
+                    history.push("/post")
+                })
+        }
     }
 
     return (
