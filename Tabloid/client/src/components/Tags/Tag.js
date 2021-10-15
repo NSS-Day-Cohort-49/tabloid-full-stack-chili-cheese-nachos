@@ -22,6 +22,14 @@ const Tag = ({ tag }) => {
         <button className="deleteTag" onClick={handleDelete}>
           Delete
         </button>
+        <button 
+            className="updateTag"
+            onClick={() => {
+              history.push(`/tag/edit/${tag.id}`)
+            }}
+        >
+          Edit
+        </button>
 
       </CardFooter>
     </Card>
