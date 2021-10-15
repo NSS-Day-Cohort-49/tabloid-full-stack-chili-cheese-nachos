@@ -8,9 +8,15 @@ const Tag = ({ tag }) => {
   const history = useHistory()
 
   const handleDelete = (evt) => {
-    evt.preventDefault()
-
-    deleteTag(tag.id).then(window.location.reload())
+    if (
+      window.confirm(
+          `Are you sure you want to delete "${tag.name}"? Press OK to confirm.`
+      )
+  ) {
+      deleteTag(tag.id).then(window.location.reload())
+  } else {
+      history.push("/tag")
+  }
   }
 
   return (
